@@ -1,2 +1,2 @@
 # pythonsql
-Learn Python To Run SQL
+Learn Python to run SQL.  Use sqlite3 module.
