@@ -10,7 +10,7 @@ class Employee:
     def email(self):
         return "{}.{}@email.com".format(self.firstname, self.lastname)
     @property
-    def fullanme(self):
+    def fullname(self):
         return "{} {}".format(self.firstname, self.lastname)
 
     def __repr__(self):
@@ -51,3 +51,39 @@ createcursorinram.execute("insert into employeestableinram values (?,?,?)", (emp
 createcursorinram.execute("insert into employeestableinram values (:firstn,:lastn,:payn)", {"firstn": employee002.firstname, "lastn": employee002.lastname, "payn": employee002.pay}) #insert a row from class Employee
 createcursorinram.execute("select * from employeestableinram")
 print(createcursorinram.fetchall()) #print [('John', 'Doe', 80000), ('Jane', 'Doe', 90000)]
+
+
+basicsqllitepythonway = sqlite3.connect(":memory:") #Create a connection.  pass a file to store data or an in-memory database sqlite3.connect(":memory").  The in-memory database is temporary.  No need to close.  No need to delete at the end.
+createcursorinram = basicsqllitepythonway.cursor() #Create a cursor to execute sql commands
+createcursorinram.execute("""create table employeestableinrambasic
+    (firstname text, lastname text, pay integer)""") #write SQL code to create a table
+basicsqllitepythonway.commit()
+def insertemployee(inputemployee):
+    with basicsqllitepythonway:
+        createcursorinram.execute("insert into employeestableinrambasic values (:firstname,:lastname,:pay)", {"firstname": inputemployee.firstname, "lastname": inputemployee.lastname, "pay": inputemployee.pay}) #insert a row
+def getemployeesbyname(inputlastname):
+    createcursorinram.execute("select * from employeestableinrambasic where lastname=:last", {"last": inputlastname})
+    return createcursorinram.fetchall()
+def updatepay(inputemployee, inputpay):
+    with basicsqllitepythonway:
+        createcursorinram.execute("""update employeestableinrambasic set pay = :pay where firstname = :firstname and lastname =:lastname""", {"firstname": inputemployee.firstname, "lastname": inputemployee.lastname, "pay": inputpay})
+def removeemployee(inputemployee):
+    with basicsqllitepythonway:
+        createcursorinram.execute("delete from employeestableinrambasic where firstname =:afirstname and lastname = :alastname", {"afirstname": inputemployee.firstname, "alastname": inputemployee.lastname})
+def getallemployees():
+    createcursorinram.execute("select * from employeestableinrambasic;")
+    return createcursorinram.fetchall()
+
+
+basicemployee001 = Employee("basicJohn", "basicDoe", 80000)
+basicemployee002 = Employee("basicJane", "basicDoe", 90000)
+insertemployee(basicemployee001)
+insertemployee(basicemployee002)
+lastnameemployees = getemployeesbyname("basicDoe")
+print(lastnameemployees) #print [('basicJohn', 'basicDoe', 80000), ('basicJane', 'basicDoe', 90000)]
+updatepay(basicemployee002, 95555)
+removeemployee(basicemployee001)
+lastnameemployees = getemployeesbyname("basicDoe")
+print(lastnameemployees) #print [('basicJane', 'basicDoe', 95555)]
+runfunctiongetallemployees = getallemployees()
+print("getallemployes", runfunctiongetallemployees) #print getallemployes [('basicJane', 'basicDoe', 95555)]
