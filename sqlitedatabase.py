@@ -1,5 +1,9 @@
 import sqlite3
 
+#RM:  practice SQLite on another python file need to connect to database and create a cursor Python code required
+#connectdatabase = sqlite3.connect("customers.db")
+#cursorc = connectdatabase.cursor()
+
 #connecttotemporarydatabaseinmemory = sqlite3.connect(":memory:")
 connectdatabase = sqlite3.connect("customers.db") #if customer.db doesn't exist, sqlite3 creates customer.db file
 
@@ -95,3 +99,112 @@ WHERE rowid = 1
 connectdatabase.commit()
 cursorc.execute("SELECT * FROM customers")
 print(cursorc.fetchone()) #print ('John', 'Elder', 'john@codemy.com')
+
+#Delete records
+cursorc.execute("delete from customers where rowid = 6")
+connectdatabase.commit()
+cursorc.execute("SELECT rowid, * FROM customers")
+forlooprowid = cursorc.fetchall()
+for eachforlooprowid in forlooprowid:
+    print(eachforlooprowid)
+    '''
+    (1, 'John', 'Elder', 'john@codemy.com')
+    (2, 'Tim', 'Smith', 'tim@codemy.com')
+    (3, 'Mary', 'Brown', 'mary@codemy.com')
+    (4, 'Wes', 'Brown', 'wes@brown.com')
+    (5, 'Steph', 'Kuewa', 'steph@kuewa.com')
+    '''
+
+#Ordering or sorting or sort by
+cursorc.execute("SELECT rowid, * FROM customers order by lastname desc")
+forlooprowid = cursorc.fetchall()
+for eachforlooprowid in forlooprowid:
+    print(eachforlooprowid)
+    '''
+    (2, 'Tim', 'Smith', 'tim@codemy.com')
+    (5, 'Steph', 'Kuewa', 'steph@kuewa.com')
+    (1, 'John', 'Elder', 'john@codemy.com')
+    (3, 'Mary', 'Brown', 'mary@codemy.com')
+    (4, 'Wes', 'Brown', 'wes@brown.com')
+    '''
+#And where clause Or where clause
+cursorc.execute("SELECT rowid, * FROM customers where lastname like 'Br%' and rowid = 3")
+forlooprowid = cursorc.fetchall()
+for eachforlooprowid in forlooprowid:
+    print(eachforlooprowid) #print (3, 'Mary', 'Brown', 'mary@codemy.com')
+cursorc.execute("SELECT rowid, * FROM customers where lastname like 'Br%' or rowid = 3")
+forlooprowid = cursorc.fetchall()
+for eachforlooprowid in forlooprowid:
+    print(eachforlooprowid)
+    '''
+    (3, 'Mary', 'Brown', 'mary@codemy.com')
+    (4, 'Wes', 'Brown', 'wes@brown.com')
+    '''
+
+#Limit
+cursorc.execute("SELECT rowid, * FROM customers limit 2")
+forlooprowid = cursorc.fetchall()
+for eachforlooprowid in forlooprowid:
+    print(eachforlooprowid)
+    '''
+    (1, 'John', 'Elder', 'john@codemy.com')
+    (2, 'Tim', 'Smith', 'tim@codemy.com')
+    '''
+cursorc.execute("SELECT rowid, * FROM customers order by rowid desc limit 2")
+forlooprowid = cursorc.fetchall()
+for eachforlooprowid in forlooprowid:
+    print(eachforlooprowid)
+    '''
+    (5, 'Steph', 'Kuewa', 'steph@kuewa.com')
+    (4, 'Wes', 'Brown', 'wes@brown.com')
+    '''
+
+#Delete table, drop table, remove table
+# cursorc.execute("drop table customers")
+# connectdatabase.commit()
+
+#Create SQL app
+import databaseimport  #Python file databaseimport.py.  Import file databaseimport.py.
+
+#Add new record to database
+databaseimport.addone("Laura", "Smith", "laura@smith.com")
+#Print all data records
+databaseimport.showall()
+'''
+(1, 'John', 'Elder', 'john@codemy.com')
+(2, 'Tim', 'Smith', 'tim@codemy.com')
+(3, 'Mary', 'Brown', 'mary@codemy.com')
+(4, 'Wes', 'Brown', 'wes@brown.com')
+(5, 'Steph', 'Kuewa', 'steph@kuewa.com')
+(6, 'Laura', 'Smith', 'laura@smith.com')
+'''
+#Delete record using row id
+databaseimport.deleteusingrowid(6)
+#Add multiple new record to database
+customerslist = [("Brenda", "Smitherton", "brenda@smitherton.com"), ("Joshua", "Raintree", "josh@raintree.com"), ("Edward", "Elric", "edward@elric.com")]
+databaseimport.addmultiples(customerslist)
+#Delete record using email address
+databaseimport.deletebyemail("edward@elric.com")
+databaseimport.showall()
+'''
+(1, 'John', 'Elder', 'john@codemy.com')
+(2, 'Tim', 'Smith', 'tim@codemy.com')
+(3, 'Mary', 'Brown', 'mary@codemy.com')
+(4, 'Wes', 'Brown', 'wes@brown.com')
+(5, 'Steph', 'Kuewa', 'steph@kuewa.com')
+(6, 'Brenda', 'Smitherton', 'brenda@smitherton.com')
+(7, 'Joshua', 'Raintree', 'josh@raintree.com')
+'''
+databaseimport.deletebyemail("laura@smith.com")
+databaseimport.deletebyemail("brenda@smitherton.com")
+databaseimport.deletebyemail("josh@raintree.com")
+databaseimport.showall()
+'''
+(1, 'John', 'Elder', 'john@codemy.com')
+(2, 'Tim', 'Smith', 'tim@codemy.com')
+(3, 'Mary', 'Brown', 'mary@codemy.com')
+(4, 'Wes', 'Brown', 'wes@brown.com')
+(5, 'Steph', 'Kuewa', 'steph@kuewa.com')
+'''
+#Lookup using Where
+databaseimport.lookupbyemail("mary@codemy.com") #return (3, 'Mary', 'Brown', 'mary@codemy.com'
